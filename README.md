@@ -1,7 +1,7 @@
 WebArbyte
 =========
 
-Mini PHP Framework to quickly start new projects!
+Mini PHP Framework to start new projects quickly!
 
 Features
 --------
