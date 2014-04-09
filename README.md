@@ -9,6 +9,7 @@ Features
 - PHP5/MySQL Backend
 - Predefined user management
 - Predefined right management
+- Predefined session management
 - OOP
 - GetText Multilanguage Support
 - German & English integrated (.po files available for easy translation)
@@ -30,3 +31,5 @@ Credits
 - jQuery http://jquery.com/
 - PHPJS http://phpjs.org/
 - Glyphicons http://glyphicons.com/
+- GNU Gettext http://www.gnu.org/software/gettext/
+- PoEdit Mac http://www.poedit.net/
