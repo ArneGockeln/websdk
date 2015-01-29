@@ -6,6 +6,7 @@
  * 
  * Add your custom functions here
  */
-
-
+function checkOnline(){
+    if(!is_online()) die('You need to be online!');
+}
 ?>

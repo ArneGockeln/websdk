@@ -13,7 +13,12 @@ if(!isEmptyString(getValue('search', $_GET))){
 $list = $mysql->fetchList();
 ?>
 <div class="row">
-  <h2><?php echo _('Rechteverwaltung'); ?> <small>(<?php echo $mysql->rowCount(); ?>)</small></h2>
+  <h2><?php echo _('Rechteverwaltung'); ?> <small>(<?php echo $mysql->rowCount(); ?>)</small>
+      <a href="<?php echo getUrl($fileIdent, array(
+          'page' => $fileIdentPage,
+          'action' => 'add'
+      )); ?>" data-toggle="tooltip" data-placement="bottom" class="btn btn-primary pull-right" title="<?php echo _('Hinzufügen'); ?>"><span class="glyphicon glyphicon-plus"></span></a>
+  </h2>
   
   <div class="row">&nbsp;</div>
   

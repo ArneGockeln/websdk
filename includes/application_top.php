@@ -43,9 +43,11 @@ require_once $rootPath . 'includes/mysql.class.php';
 require_once $rootPath . 'includes/user.class.php';
 require_once $rootPath . 'includes/userrole.class.php';
 require_once $rootPath . 'includes/usersession.class.php';
-require_once $rootPath . 'includes/pageTree.class.php';
 
 require_once $rootPath . 'includes/functions.php';
+if(is_file($rootPath . 'includes/functions.custom.php')){
+    require_once $rootPath . 'includes/functions.custom.php';
+}
 
 define('AP_HTTPHOST', getHttpHost());
 define('AP_DOCROOT', $rootPath);
@@ -55,7 +57,4 @@ $localeList = getLocaleList();
 
 // set user locale
 _setLocale(getCurrentLocale(), getCurrentLocale());
-
-// include global navigation
-require_once $rootPath . 'includes/navigation.config.php';
 ?>

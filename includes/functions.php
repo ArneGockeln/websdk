@@ -21,12 +21,23 @@ function is_online() {
 }
 
 /**
- * Returns a correct href
+ * Returns a correct href url
  * @param string $file
+ * @param array $params additional params as key => value pairs
  * @return string
  */
-function getUrl($file) {
-  return getHttpHost(true) . $file;
+function getUrl($file, $params = array()) {
+    if(is_array($params) && count($params) > 0){
+        $url = getHttpHost(true) . $file . '?';
+        foreach($params as $key => $value){
+            $url .= urlencode($key) . '=' . urlencode($value) . '&';
+        }
+        $url = substr($url, 0, -1);
+
+        return $url;
+    } else {
+        return getHttpHost(true) . $file;
+    }
 }
 
 /**
@@ -704,5 +715,133 @@ function sendEmail($to, $to_name, $subject, $body){
   $mail->Body = $body;
     
   return $mail->send();
+}
+
+/**
+ * Set custom options to default options array
+ * sets only options if keys are available in default options array
+ * @param array $defaults
+ * @param array $customs
+ * @return array
+ */
+function get_options(array $defaults, array $customs){
+    if(is_array($defaults) && is_array($customs)){
+        foreach($customs as $customOptionKey => $customOption){
+            if(array_key_exists($customOptionKey, $defaults)){
+                $defaults[$customOptionKey] = $customOption;
+            }
+        }
+        return $defaults;
+    }
+
+    return array();
+}
+
+/**
+ * Walks through $pageTree defined in template.nav.php
+ * $args = array(
+    'pageTree' => array() // the page tree
+    'root_container' => '<ul>|</ul>', // root container
+    'child_container' => '<ul>|</ul>', // child container
+    'root_wrapper' => '<li>|</li>', // links will be wrapped into
+    'child_wrapper' => '<li>|</li>', // child links will be wrapped into
+    'ident_selected' => '' // this ident get class="active"
+ * )
+ */
+function nav_walker(array $args){
+    $pageTree = getValue('pageTree', $args);
+    if(!is_array($pageTree)){
+        die('need pageTree as array!');
+    }
+
+    $options = get_options(array(
+        'pageTree' => array(),
+        'root_container' => '<ul>|</ul>',
+        'child_container' => '<ul>|</ul>',
+        'root_wrapper' => '<li>|</li>',
+        'child_wrapper' => '<li>|</li>',
+        'is_dropdown' => false,
+        'ident_selected' => ''
+    ), $args);
+
+    $root_container = explode('|', getValue('root_container', $options));
+    $child_container = explode('|', getValue('child_container', $options));
+    $root_wrapper = explode('|', getValue('root_wrapper', $options));
+    $child_wrapper = explode('|', getValue('child_wrapper', $options));
+
+    $nl = "\n";
+    $result = getValue('is_dropdown', $options) !== false ? $child_container[0] : $root_container[0];
+    $isOnline = is_online();
+    foreach($pageTree as $filename => $pageOptions){
+        switch($filename) {
+            case 'dropdown':
+                $result .= str_replace('>', ' class="dropdown">', $root_wrapper[0]);
+                $result .= '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">';
+                $result .= getValue('text', $pageOptions);
+                $result .= '</a>';
+                // recursive
+                $childOptions = $options;
+                $childOptions['pageTree'] = getValue('childs', $pageOptions);
+                $childOptions['is_dropdown'] = true;
+
+                $result .= nav_walker($childOptions);
+                $result .= $root_wrapper[1];
+                break;
+            default: // page like 'index.php'
+                // require active user session
+                if(getValue('require_login', $pageOptions) !== false && $isOnline === false){
+                    break;
+                }
+
+                // check rights
+                if (!hasRights(getValue('rights', $pageOptions))) {
+                    break;
+                }
+
+                // generate identification if not available
+                $ident = (getValue('ident', $pageOptions) !== false ? getValue('ident', $pageOptions) : preg_replace('/[^\w\._]+/', '', strtolower(getValue('text', $pageOptions))));
+                // add link
+                $result .= (getValue('ident_selected', $options) == $ident ? str_replace('>', ' class="active">', $root_wrapper[0]) : $root_wrapper[0]) . '<a href="' . getUrl($filename) . '" target="_parent">' . getValue('text', $pageOptions) . '</a>' . $root_wrapper[1] . $nl;
+                break;
+        }
+    }
+    $result .= getValue('is_dropdown', $options) !== false ? $child_container[1] : $root_container[1];
+    return $result;
+}
+
+/**
+ * Check if given ident equals $fileIdent
+ * @param String $ident
+ * @return bool
+ */
+function isIdent($ident){
+    global $fileIdent;
+    return (md5($fileIdent) == md5($ident));
+}
+
+/**
+ * Returns fileIdentPage or default
+ * @param $default
+ * @return String
+ */
+function getFileIdentPage($default){
+    global $data;
+    return (!isEmptyString(getValue('page', $data)) ? getValue('page', $data) : $default);
+}
+
+/**
+ * Returns action and post/get data as array
+ * @return array
+ */
+function getDataArray(){
+    return ($_POST ? $_POST : $_GET);
+}
+
+/**
+ * Returns action and post/get data as object
+ * @return object
+ */
+function getDataObject(){
+    return (object)getDataArray();
 }
 ?>
