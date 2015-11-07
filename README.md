@@ -19,7 +19,10 @@ Features
 
 Installation
 ------------
-- until now there is no documentation for installation. I will add it soon!
+1. add new mysql database and import install/websdk_starter.sql
+2. edit config.php and set database credentials
+3. upload files to your webserver (don't forget the .htaccess)
+4. login with user 'admin' and password 'Password123'
 
 Credits
 -------
