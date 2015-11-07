@@ -1,0 +1,106 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ pagetitle }}</h1>
+            </div>
+
+            <form method="post" action="{{ siteurl }}/users/save">
+                <input type="hidden" name="inputID" value="{{ user['id'] }}">
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans 'Daten' %}</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label for="inputType">{% trans 'Konto Typ' %}</label>
+                            <select name="inputType" class="form-control">
+                                {% for type,name in usertypes %}
+                                    <option value="{{ type }}" {% if type == user['type'] %}selected{% endif %}>{{ name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputUsername">{% trans 'Benutzername' %} <small>({% trans %}Der Benutzername ist alphanumerisch, 1-15 Zeichen lang und enthällt keine Sonder- und/oder Leerzeichen!{% endtrans %})</small></label>
+                            <input type="text" name="inputUsername" id="inputUsername" class="form-control" value="{{ user['username'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputFirstname">{% trans 'Vorname' %}</label>
+                            <input type="text" name="inputFirstname" id="inputFirstname" class="form-control" value="{{ user['firstname'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputLastname">{% trans 'Nachname' %}</label>
+                            <input type="text" name="inputLastname" id="inputLastname" class="form-control" value="{{ user['lastname'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmail">{% trans 'E-Mail' %}</label>
+                            <input type="email" name="inputEmail" id="inputEmail" class="form-control" value="{{ user['email'] }}">
+                        </div>
+                        <div class="form-group">
+                            <label>{% trans 'Sicherheit' %}</label>
+                            <div class="checkbox">
+                                <label for="inputLocked">
+                                    <input type="hidden" name="inputLocked" value="0"><input type="checkbox" name="inputLocked" value="1" id="inputLocked" {% if user['locked'] == 1 %}checked{% endif %}>
+                                    {% trans 'Gesperrt' %}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if isAdmin and showRightList %}
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">{% trans 'Rechte' %}</h3>
+                        </div>
+                        <ul class="list-group">
+                            {% for right,desc in userrights %}
+                            <li class="list-group-item">
+                                <label for="inputRights{{ right }}" class="checkbox-inline">
+                                    <input type="checkbox" name="inputRights[]" id="inputRights{{ right }}" value="{{ right }}" {% if hasUserRight(user['rights'], right) %}checked{% endif %}> {{ desc }}
+                                </label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans 'Passwort ändern' %}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if user['locked'] == 0 and user['id'] > 0 %}{# passwords are only for change for unlocked and existing users #}
+                            <p>{% trans %}Das Passwort muss aus mindestens 6 alphanumerischen Zeichen, 1 Großbuchstaben und 1 Kleinbuchstaben bestehen. Die Sonderzeichen !@#$_% sind erlaubt.{% endtrans %}</p>
+                            <div class="form-group">
+                                <label for="inputPwd1">{% trans 'Neues Passwort' %}:</label>
+                                <input type="password" class="form-control" name="inputPwd1" id="inputPwd1">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPwd2">{% trans 'Passwort widerholen' %}:</label>
+                                <input type="password" class="form-control" name="inputPwd2" id="inputPwd2">
+                            </div>
+                        {% else %}
+                            <p>
+                            {% if user['id'] > 0 %}
+                                {% trans %}Passwörter können nur bei freigeschalteten Benutzern geändert werden! Bei der Freischaltung wird ein neues Passwort generiert und dem Benutzer per E-Mail gesendet.{% endtrans %}
+                            {% else %}
+                                {% trans %}Passwörter können nur bei bestehenden Benutzern geändert werden. Neue Benutzer erhalten automatisch ein sicheres Passwort per E-Mail mitgeteilt.{% endtrans %}
+                            {% endif %}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="well well-sm">
+                    <button type="submit" class="btn btn-primary btn-with-spinner">{% trans 'Speichern' %}</button>
+                    <a href="{{ siteurl }}/users" class="btn">{% trans 'Abbrechen' %}</a>
+                    <span class="btn pull-right" style="font-weight:normal; text-transform: none;">{% trans 'Letzte Änderung' %}: {{ user['lastmod']|date("d.m.Y H:i:s") }}</span>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

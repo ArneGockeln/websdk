@@ -1,0 +1,19 @@
+{# help modal #}
+<div class="modal fade" id="modalHelp">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="{% trans 'Schließen' %}"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{% trans 'Hilfe' %}</h4>
+            </div>
+            <div class="modal-body">
+                {% block helpmodal %}
+                    <p>{% trans 'Für diese Seite ist noch keine Hilfe verfügbar!' %}</p>
+                {% endblock %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{% trans 'Schließen' %}</button>
+            </div>
+        </div>
+    </div>
+</div>

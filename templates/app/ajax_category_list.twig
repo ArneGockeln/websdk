@@ -1,0 +1,21 @@
+<ul class="list-group">
+    {% for cat in categoryList %}
+        <li class="list-group-item clearfix">
+            <div class="input-group">
+                <input type="text" name="inputCategory{{ ident }}{{ cat['id'] }}" id="inputCategory{{ ident }}{{ cat['id'] }}" class="form-control" value="{{ cat['name'] }}">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-success btn-ajax-save-{{ ident }}" data-element-id="{{ cat['id'] }}" data-toggle="tooltip" data-placement="bottom" title="{% trans 'speichern' %}"><i class="glyphicon glyphicon-floppy-disk"></i></button>
+                    <button type="button" class="btn btn-danger btn-modal-delete" data-confirm-uri="/options/categories/{{ ident }}" data-element-id="{{ cat['id'] }}" data-toggle="tooltip" data-placement="bottom" title="{% trans 'löschen' %}"><i class="glyphicon glyphicon-trash"></i></button>
+                </div>
+            </div>
+        </li>
+    {% endfor %}
+    <li class="list-group-item list-group-item-muted clearfix">
+        <div class="input-group">
+            <input type="text" name="inputCategory{{ ident }}0" id="inputCategory{{ ident }}0" value="" placeholder="{% trans 'Neue Kategorie...' %}" class="form-control">
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-success btn-ajax-save-{{ ident }}" data-element-id="0" data-toggle="tooltip" data-placement="bottom" title="{% trans 'speichern' %}"><i class="glyphicon glyphicon-floppy-disk"></i></button>
+            </div>
+        </div>
+    </li>
+</ul>

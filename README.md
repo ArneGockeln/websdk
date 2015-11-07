@@ -1,35 +1,31 @@
-WebArbyte
+WebSDK
 =========
 
-Mini PHP Framework to start new projects quickly!
+Mini PHP Source Development Kit to start new projects quickly!
 
 Features
 --------
+- OOP
 - Twitter Bootstrap Frontend
-- PHP5/MySQL Backend
+- PHP5/MySQL5 Backend
 - Predefined user management
 - Predefined right management
 - Predefined session management
-- OOP
+- Slim Routing Framework
+- Twig Template Engine
+- Ajax/xhr ready
 - GetText Multilanguage Support
 - German & English integrated (.po files available for easy translation)
 
 Installation
 ------------
-1. Copy all files to your webserver
-2. Edit ./config.php
-3. Import ./install/webarbyte.sql to a new mysql database
-4. Login with email: you@yourdomain.com and pwd: admin
-
-You can change the default language in config.php or set it per user!
-
-In future I will add some more advanced examples and documentation!
+- until now there is no documentation for installation. I will add it soon!
 
 Credits
 -------
 - Twitter Bootstrap http://getbootstrap.com/
 - jQuery http://jquery.com/
-- PHPJS http://phpjs.org/
+- Fontawesome https://fortawesome.github.io/Font-Awesome/
 - Glyphicons http://glyphicons.com/
 - GNU Gettext http://www.gnu.org/software/gettext/
 - PoEdit Mac http://www.poedit.net/

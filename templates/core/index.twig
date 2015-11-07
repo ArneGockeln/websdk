@@ -1,0 +1,51 @@
+{% extends 'base.twig' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header">
+            <h1>{% trans 'Übersicht' %}</h1>
+        </div>
+
+        <div class="row">
+            {% if isAdmin %}
+                {# Overview for Administrators #}
+            <div class="col-sm-12">
+                {# panel new user registrations #}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans 'Neue Benutzer' %}</h3>
+                    </div>
+                    <table class="table">
+                        {% if newUsers|length > 0 %}
+                            <thead>
+                            <tr>
+                                <th>{% trans 'Benutzername' %}</th>
+                                <th>{% trans 'Nachname' %}, {% trans 'Vorname' %}</th>
+                                <th>{% trans 'Datum' %}</th>
+                                <th>{% trans 'Gesperrt' %}</th>
+                            </tr>
+                            </thead>
+                        {% endif %}
+                        <tbody>
+                        {% for user in newUsers %}
+                            <tr>
+                                <td><a href="{{ siteurl }}/users/edit/{{ user['id'] }}" data-title="{% trans 'bearbeiten' %}" data-toggle="tooltip" data-placement="left">{{ user['username'] }}</a></td>
+                                <td>{{ user['lastname'] }}, {{ user['firstname'] }}</td>
+                                <td>{{ user['lastmod']|date("d.m.Y") }}</td>
+                                <td><a href="{{ siteurl }}/users/{% if user['locked'] == 1 %}unlock/{% else %}lock/{% endif %}{{ user['id'] }}" data-toggle="tooltip" data-placement="left" data-title="{% if user['locked'] == 1 %}{% trans 'entsperren' %}{% else %}{% trans 'sperren' %}{% endif %}" class="btn-with-spinner">{% if user['locked'] == 1 %}<i class="fa fa-lock text-danger"></i>{% else %}<i class="fa fa-unlock text-success"></i>{% endif %}</a></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="text-center">{% trans 'Keine Einträge gefunden.' %}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,188 @@
+{% extends 'base.twig' %}
+
+{% block head %}
+<script src="{{ siteurl }}/templates/js/tinymce/tinymce.min.js"></script>
+<script src="{{ siteurl }}/templates/js/tinymce/jquery.tinymce.min.js"></script>
+<script src="{{ siteurl }}/templates/js/wysiwyg.js"></script>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h1>{{ pagetitle }}</h1>
+            </div>
+
+            <form method="post" action="{{ siteurl }}/events/update">
+                <input type="hidden" name="inputID" value="{{ event['id'] }}"/>
+                <input type="hidden" name="inputUserID" value="{{ event['userid'] }}"/>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <legend>{% trans 'Titel' %} <span class="text-danger">*</span></legend>
+                        <div class="form-group col-sm-12">
+                            <input type="text" name="inputTitle" id="inputTitle" class="form-control" value="{{ event['title'] }}" placeholder="{% trans 'Titel' %}" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <legend>{% trans 'Kategorisierung' %}</legend>
+                        <div class="form-group col-sm-4">
+                            <label for="inputIQZCategory">{% trans 'IQZ Kategorie' %} <span class="text-danger">*</span></label>
+                            <select name="inputIQZCategoryId" id="inputIQZCategory" class="form-control" {{ eventReadonly(event['status']) }}>
+                                {% for cat in iqzcategories %}<option value="{{ cat['id'] }}" {% if cat['id'] == event['iqzcategoryid'] %}selected{% endif %}>{{ cat['name'] }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="inputCategory">{% trans 'Kategorie' %} <span class="text-danger">*</span></label>
+                            <select name="inputCategoryId" id="inputCategory" class="form-control" {{ eventReadonly(event['status']) }}>
+                                {% for cat in eventcategories %}<option value="{{ cat['id'] }}" {% if cat['id'] == event['categoryid'] %}selected{% endif %}>{{ cat['name'] }}</option>{% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="inputCustomID">{% trans 'Veranstaltungs-ID' %}</label>
+                            <input type="text" name="inputCustomID" id="inputCustomID" class="form-control" placeholder="{% trans 'Veranstaltungs-ID' %}" value="{{ event['customid'] }}" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <legend>{% trans 'Beschreibungen' %}</legend>
+                        <div class="form-group col-sm-12">
+                            <label for="inputBodyShort">{% trans 'Kurztext' %}</label>
+                            <textarea name="inputBodyShort" id="inputBodyShort" class="form-control" rows="5" placeholder="{% trans 'Skizzieren Sie kurz Ihre Veranstaltung' %}" {{ eventReadonly(event['status']) }}>{{ event['bodyshort'] }}</textarea>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="inputBodyLong">{% trans 'Langtext' %}</label>
+                            <textarea name="inputBodyLong" id="inputBodyLong" class="form-control wysiwyg" rows="10" {{ eventReadonly(event['status']) }} {% if isAdmin != false %}showcode="true"{% endif %}>{{ event['bodylong'] }}</textarea>
+                            <div class="checkbox">
+                                <label for="inputPublicBodyLong">
+                                    <input type="checkbox" name="inputStatus[]" id="inputPublicBodyLong" value="4" {% if eventHasStatus(event['status'], 4) %}checked{% endif %} {{ eventReadonly(event['status']) }}/>
+                                    {% trans 'Soll die Beschreibung öffentlich angezeigt werden?' %}
+                                </label>
+                            </div>
+                        </div>
+                        <legend>{% trans 'Preise' %}</legend>
+                        <div class="form-group col-sm-6">
+                            <label for="inputPrice">{% trans 'Veranstaltungskosten' %} <span class="text-danger">*</span></label>
+                            <input type="text" name="inputPrice" id="inputPrice" class="form-control" value="{{ event['price'] }}" data-mask="#0.00" data-mask-reverse="false" placeholder="2500.00" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="inputMaterialPrice">{% trans 'Materialkosten' %}</label>
+                            <input type="text" name="inputMaterialPrice" id="inputMaterialPrice" class="form-control" value="{{ event['materialprice'] }}"  data-mask="#0.00" data-mask-reverse="false" placeholder="100.00" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="inputAdditionalPrice">{% trans 'Zusätzliche Veranstaltungskosten' %}</label>
+                            <textarea name="inputAdditionalPrice" id="inputAdditionalPrice" class="form-control" placeholder="{% trans 'Beschreiben Sie zusätzliche Veranstaltungskosten' %}" {{ eventReadonly(event['status']) }}>{{ event['additionalprice'] }}</textarea>
+                        </div>
+                        <legend>{% trans 'Teilnehmer' %}</legend>
+                        <div class="form-group col-sm-12">
+                            <label for="inputTargetgroup">{% trans 'Zielgruppe' %}</label>
+                            <textarea name="inputTargetgroup" id="inputTargetgroup" class="form-control" rows="3" placeholder="{% trans 'Beschreiben Sie die Zielgruppe' %}" {{ eventReadonly(event['status']) }}>{{ event['targetgroup'] }}</textarea>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="inputMembercount">{% trans 'Teilnehmeranzahl' %} <span class="text-danger">*</span></label>
+                            <input type="text" name="inputMembercount" id="inputMembercount" class="form-control" value="{{ event['membercount'] }}" data-mask="###0" placeholder="1" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <div class="form-group col-sm-6">
+                            <label for="inputAdministrator">{% trans 'Name des Leiters' %} <span class="text-danger">*</span></label>
+                            <input type="text" name="inputAdministrator" id="inputAdministrator" class="form-control" placeholder="{% trans 'Name des Leiters' %}" value="{{ event['administrator'] }}" {{ eventReadonly(event['status']) }}/>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="inputTrainer">{% trans 'Referenten' %}</label>
+                            <textarea name="inputTrainer" id="inputTrainer" class="form-control" placeholder="{% trans 'Wer sind Ihre Referenten?' %}" rows="3">{{ event['trainer'] }}</textarea>
+                        </div>
+                        <legend>{% trans 'Veranstaltungsort' %}</legend>
+                        <div class="form-group col-sm-12">
+                            <label for="inputLocation">{% trans 'Ort der Veranstaltung' %}</label>
+                            <textarea name="inputLocation" id="inputLocation" class="form-control" rows="3" placeholder="{% trans 'Wo findet die Veranstaltung statt?' %}">{{ event['location'] }}</textarea>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label for="inputContacts">{% trans 'Kontaktdaten' %}</label>
+                            <textarea name="inputContacts" id="inputContacts" class="form-control" rows="3" placeholder="{% trans 'Wie können die Teilnehmer Sie erreichen?' %}" {{ eventReadonly(event['status']) }}>{{ event['contacts'] }}</textarea>
+                        </div>
+                        <legend>{% trans 'Einstellungen' %}</legend>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="inputStartdate">{% trans 'Datum Start' %} <span class="text-danger">*</span></label>
+                                <input type="text" name="inputStartdate" id="inputStartdate" class="form-control datepicker" value="{{ event['startdate'] }}" data-mask="0000-00-00" placeholder="2015-12-01"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEnddate">{% trans 'Datum Ende' %}</label>
+                                <input type="text" name="inputEnddate" id="inputEnddate" class="form-control datepicker" value="{% if event['enddate'] != '0000-00-00' %}{{ event['enddate'] }}{% endif %}" data-mask="0000-00-00" placeholder="2015-12-31"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTimeStart">{% trans 'Uhrzeit Start' %} <span class="text-danger">*</span></label>
+                                <input type="text" name="inputTimeStart" id="inputTimeStart" class="form-control clockpicker" value="{{ event['timestart'] }}" data-mask="00:00" placeholder="10:00"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputTimeEnd">{% trans 'Uhrzeit Ende' %}</label>
+                                <input type="text" name="inputTimeEnd" id="inputTimeEnd" class="form-control clockpicker" value="{{ event['timeend'] }}" data-mask="00:00" placeholder="12:00"/>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            {% if isAdmin  %}
+                                {# Status for Administrators #}
+                                <div class="form-group">
+                                    <label for="inputStatusAdmin">{% trans 'Status' %}</label>
+                                    {% for statusAdmin in statiAdmin %}
+                                        <div class="checkbox">
+                                            <label for="inputStatus{{ statusAdmin['id'] }}">
+                                                <input type="checkbox" name="inputStatus[]" id="inputStatus{{ statusAdmin['id'] }}" value="{{ statusAdmin['id'] }}" {% if eventHasStatus(event['status'], statusAdmin['id']) %}checked{% endif %}> {{ statusAdmin['name'] }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                {# Status for Event Managers #}
+                                <div class="form-group">
+                                    <p class="form-control-static">{% trans 'Prüfung' %}</p>
+                                    <label for="inputStatus2">
+                                        <input type="checkbox" name="inputStatus[]" id="inputStatus2" value="2" {% if eventHasStatus(event['status'], 2) %}checked{% endif %}> {% trans %}Die Veranstaltung wird mit einer Prüfung abgeschlossen. Ein Muster der Prüfung sende ich der Verwaltung zu.{% endtrans %}
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputStatus">{% trans 'Status' %}</label>
+                                    {% for statusManager in statiManager %}
+                                        {% if isAdmin == false and statusManager['id'] == 2 %}{# do nothing #}{% else %}
+                                            <div class="checkbox">
+                                                <label for="inputStatus{{ statusManager['id'] }}">
+                                                    <input type="checkbox" name="inputStatus[]" id="inputStatus{{ statusManager['id'] }}" value="{{ statusManager['id'] }}" {% if eventHasStatus(event['status'], statusManager['id']) %}checked{% endif %}> {{ statusManager['name'] }}
+                                                </label>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {# Only visible for EventManagers #}
+                    </div>
+                    {% if isAdmin %}
+                    <div class="panel-footer">
+                        <legend>{% trans 'Verwaltung' %}</legend>
+                        <!-- only for administrators -->
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="inputPoints">{% trans 'Punkte' %}</label>
+                                    <input type="text" name="inputPoints" id="inputPoints" class="form-control" data-mask="000" placeholder="0" value="{{ event['points'] }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputPointsExam">{% trans 'Punkte für Prüfung' %}</label>
+                                    <input type="text" name="inputPointsExam" id="inputPointsExam" class="form-control" data-mask="000" placeholder="0" value="{{ event['points_exam'] }}"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="inputNotes">{% trans 'Interne Notizen' %}</label>
+                                    <textarea name="inputNotes" id="inputNotes" class="form-control" rows="5">{{ event['notes'] }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="well well-sm">
+                    <button type="submit" class="btn btn-primary btn-with-spinner">{% trans 'Speichern' %}</button>
+                    <a href="{{ siteurl }}/events" class="btn">{% trans 'Abbrechen' %}</a>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block helpmodal %}
+    <p>Hier sollen Erklärungen für die Seminare stehen.</p>
+{% endblock %}

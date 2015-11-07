@@ -1,0 +1,86 @@
+{% extends "base.twig" %}
+
+{% block head %}
+<script type="text/javascript">
+    $(function(){
+        $('#restorepwdbtn').on('click', function(){
+            $('#restoreUsername').val('');
+            $('#restorepwdform').toggleClass('hide', '');
+        });
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h2>{% trans 'Anmeldung' %}</h2>
+        <form method="post" action="{{ siteurl }}/login">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="username">{% trans 'Benutzername' %}</label>
+                        <input type="text" class="form-control" id="username" name="inputUsername" placeholder="{% trans 'Benutzername' %}">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">{% trans 'Passwort' %}</label>
+                        <input type="password" class="form-control" id="pwd" name="inputPwd" placeholder="{% trans 'Passwort' %}">
+                    </div>
+                </div>
+            </div>
+            <div class="well well-sm">
+                <button type="submit" class="btn btn-primary btn-with-spinner">{% trans 'Anmelden' %}</button>
+                <a href="javascript:void(0);" class="btn" id="restorepwdbtn">{% trans 'Passwort vergessen?' %}</a>
+            </div>
+        </form>
+
+        <form method="post" action="{{ siteurl }}/restorepwd" class="hide" id="restorepwdform">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <p class="help-block">{% trans 'Bitte geben Sie Ihren Benutzernamen ein, wir senden Ihnen ein neues Passwort an die hinterlegte E-Mail Adresse.' %}</p>
+                    <div class="form-group">
+                        <label for="restoreUsername">{% trans 'Benutzername' %}</label>
+                        <input type="text" class="form-control" id="restoreUsername" name="inputUsername" placeholder="{% trans 'Benutzername' %}">
+                    </div>
+                </div>
+            </div>
+            <div class="well well-sm">
+                <button type="submit" class="btn btn-primary btn-with-spinner">{% trans 'Passwort anfordern' %}</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <h2>{% trans 'Registrierung' %}</h2>
+        <form method="post" action="{{ siteurl }}/register">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label for="inputFirstname">{% trans 'Vorname' %}</label>
+                        <input type="text" name="inputFirstname" id="inputFirstname" class="form-control" placeholder="{% trans 'Vorname' %}">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputLastname">{% trans 'Nachname' %}</label>
+                        <input type="text" name="inputLastname" id="inputLastname" class="form-control" placeholder="{% trans 'Nachname' %}">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerUsername">{% trans 'Benutzername' %} *</label>
+                        <input type="text" name="inputUsername" id="registerUsername" class="form-control" placeholder="{% trans 'Benutzername' %}">
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">{% trans 'E-Mail' %} *</label>
+                        <input type="email" name="inputEmail" id="registerEmail" class="form-control" placeholder="{% trans 'E-Mail' %}">
+                    </div>
+                    <div class="form-group">
+                        <p class="help-block"><span class="text-info">{% trans 'Die mit * markierten Felder sind Pflichtfelder!' %}</span></p>
+                        <p class="help-block">{% trans 'Ein Passwort wird Ihnen an Ihre E-Mail Adresse gesendet. Der neue Account muss zunächst von einem Administrator geprüft und freigeschaltet werden.' %}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="well well-sm">
+                <button type="submit" class="btn btn-primary btn-with-spinner">{% trans 'Registrierung abschließen' %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

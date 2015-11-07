@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ app_title }}{% endblock %}</title>
+
+    <!-- Bootstrap -->
+    <link href="{{ siteurl }}/templates/css/bootstrap/themes/bootstrap-flatly{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap.custom{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap-datepicker.min.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap-clockpicker.min.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/custom{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <base href="{{ siteurl }}" id="baseUrl"/>
+    {% block head %}{% endblock %}
+</head>
+<body>
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ siteurl }}">{{ app_title }}</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            {% if isOnline %}
+            <ul class="nav navbar-nav">
+                {{ menus['leftMenu']|raw }}
+            </ul>
+                {% if isAdmin %}<p class="navbar-text text-admin">{% trans 'Als Administrator angemeldet!' %}</p>{% endif %}
+            <ul class="nav navbar-nav navbar-right">
+                {{ menus['rightMenu']|raw }}
+            </ul>
+            {% endif %}
+        </div><!--/.nav-collapse -->
+    </div>
+</nav>
+<div class="container">
+    {% if system_messages|length > 0 %}
+        <div class="row">
+            <div class="divider">&nbsp;</div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+            {% for sm in system_messages %}
+                <div class="alert alert-{{ sm.type }}"><strong>{{ transAlert(sm.type)|capitalize }}</strong>: {{ sm.msg }}</div>
+            {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</div>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="{{ siteurl }}/templates/js/bootstrap.min.js"></script>
+{% if isOnline %}
+<script type="text/javascript">
+    setTimeout(function(){
+        document.location.reload(true);
+    }, {{ sessionlimit }});
+</script>
+{% endif %}
+{% block footer %}{# for additional js or whatever #}{% endblock %}
+{% include 'modal/modal_delete.twig' %}
+{% include 'modal/modal_help.twig' %}
+<script src="{{ siteurl }}/templates/js/jquery.mask.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap-datepicker.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap-datepicker.de.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap-clockpicker.min.js"></script>
+<script src="{{ siteurl }}/templates/js/core{% if app_mode == 'production' %}.min{% endif %}.js"></script>
+<!-- WebSDK Version {{ wdk_version }}, build with love by www.Webchef.de. For more info check www.getWebSDK.com -->
+</body>
+</html>
