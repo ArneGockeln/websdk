@@ -10,8 +10,7 @@ namespace WebSDK;
 abstract class UserRightEnum {
 
     const MANAGE_USERS = 1;
-    const MANAGE_EVENTS = 2;
-    const MANAGE_OPTIONS = 3;
+    const MANAGE_OPTIONS = 2;
 
     static function toArray(){
         $oClass = new \ReflectionClass(__CLASS__);
@@ -21,8 +20,7 @@ abstract class UserRightEnum {
     static function getNames(){
         $names = array(
             1 => _('Benutzer verwalten'),
-            2 => _('Seminare verwalten'),
-            3 => _('Einstellungen verwalten')
+            2 => _('Einstellungen verwalten')
         );
         return $names;
     }
@@ -30,8 +28,7 @@ abstract class UserRightEnum {
     static function getDescription(){
         $desc = array(
             1 => _('Der Benutzer darf andere Benutzer hinzufügen, bearbeiten und löschen.'),
-            2 => _('Der Benutzer darf Seminare hinzufügen, bearbeiten und löschen'),
-            3 => _('Der Benutzer darf globale Einstellungen ändern.')
+            2 => _('Der Benutzer darf globale Einstellungen ändern.')
         );
         return $desc;
     }

@@ -87,7 +87,7 @@ CREATE TABLE `websdk_users` (
 --
 
 INSERT INTO `websdk_users` (`id`, `type`, `firstname`, `lastname`, `username`, `email`, `locale`, `rights`, `pwd`, `salt`, `locked`, `deleted`, `lastmod`) VALUES
-(1, 0, 'Web', 'Chef', 'admin', 'hello@domain.de', 'de_DE', '1,2,3', 'e396350256d32a687a7bf456077b062d3abb368de5280593f3ebb70976d3edf1', 'jkDUiwy7lC', 0, 0, '2015-11-07 22:12:58');
+(1, 0, 'Web', 'Chef', 'admin', 'hello@domain.de', 'de_DE', '1,2', 'e396350256d32a687a7bf456077b062d3abb368de5280593f3ebb70976d3edf1', 'jkDUiwy7lC', 0, 0, '2015-11-07 22:12:58');
 
 --
 -- Indizes der exportierten Tabellen
