@@ -6,6 +6,8 @@
 
 // Set App Title
 //define('CFG_WDK_APP_TITLE', '');
+// Set App Class Namespace for autoloading!
+define('CFG_WDK_APP_NAMESPACE', '');
 
 // Database Host
 define('CFG_DB_HOST', 'localhost');

@@ -1,21 +1,25 @@
+{% if pagination['pages']|length > 1 %}
 <nav>
     <ul class="pagination">
         {% if pagination['previous_page'] > -1 %}
             <li>
-                <a href="{{ pagination['previous_page_url'] }}" aria-label="Previous">
+                <a href="{{ pagination['previous_page_url'] }}" aria-label="Previous" {% if isXHR %}class="pagination-link"{% endif %}>
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
         {% endif %}
         {% for key,value in pagination['pages'] %}
-            <li{% if (value-1) == pagination['current_page'] %} class="active"{% endif %}><a href="{{ key }}">{{ value }}</a></li>
+            <li{% if (value-1) == pagination['current_page'] %} class="active"{% endif %}>
+                <a href="{{ key }}" {% if isXHR %}class="pagination-link"{% endif %}>{{ value }}</a>
+            </li>
         {% endfor %}
         {% if pagination['next_page'] > -1 %}
             <li>
-                <a href="{{ pagination['next_page_url'] }}" aria-label="Next">
+                <a href="{{ pagination['next_page_url'] }}" aria-label="Next" {% if isXHR %}class="pagination-link"{% endif %}>
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
         {% endif %}
     </ul>
 </nav>
+{% endif %}

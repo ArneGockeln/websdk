@@ -1,13 +1,11 @@
-{% trans %}
-Hallo {{ username }},
+{% extends 'email/email_body_footer.twig' %}
 
-Ihr Konto wurde von einem Administrator freigeschaltet.
+{% block content %}
+    {% trans %}
+    Hallo {{ username }},
 
-Ihr neues Passwort lautet: {{ newpassword }}
+    Ihr Konto wurde von einem Administrator freigeschaltet.
 
-Mit freundlichen Grüßen,
-Ihr IQZ Team
-{% endtrans %}
-
----
-{% trans %}Diese E-Mail wurde automatisch generiert.{% endtrans %}
+    Ihr neues Passwort lautet: {{ newpassword }}
+    {% endtrans %}
+{% endblock %}

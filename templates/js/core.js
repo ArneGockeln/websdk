@@ -31,6 +31,8 @@ function rebindModalDelete(ajaxCallback){
                 // ajax get modal body
                 $.getJSON(baseURL + confirmURI + '/delete_confirm/' + elementID, function(response){
                     var modalDialog = $('#modalDelete');
+                    var modalTitle = modalDialog.find('.modal-title');
+                    modalTitle.html(modalTitle.data('default-title'));
                     modalDialog.find('.modal-body').html(response.body);
                     // do we have a js callback?
                     if(typeof(ajaxCallback) == 'function'){
@@ -127,5 +129,11 @@ $(function(){
         $('#modalHelp').modal('show');
     });
 
-
+    // Format all input.decimal-mask fields with data-a-sign=" MB|KB|EUR|..."
+    // like 1.50 MB
+    $('input.decimal-mask').autoNumeric('init', {
+        aSep: '',
+        aDec: '.',
+        pSign: 's' // s-uffix, p-refix
+    });
 });

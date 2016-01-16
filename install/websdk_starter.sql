@@ -27,26 +27,31 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `websdk_options` (
-  `id` bigint(20) NOT NULL,
-  `option_category` varchar(64) NOT NULL DEFAULT 'default',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `option_key` varchar(64) NOT NULL,
-  `option_value` longtext NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+  `option_value` longtext NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `option_key` (`option_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `websdk_options`
---
+LOCK TABLES `websdk_options` WRITE;
+/*!40000 ALTER TABLE `websdk_options` DISABLE KEYS */;
 
-INSERT INTO `websdk_options` (`id`, `option_category`, `option_key`, `option_value`) VALUES
-(10, 'default', 'core_session_time_limit', '30'),
-(11, 'default', 'core_mailer_from', 'WebSDK'),
-(12, 'default', 'core_mailer_from_email', 'hello@domain.de'),
-(13, 'default', 'core_mailer_reply_email', 'reply@domain.de'),
-(14, 'default', 'core_mailer_admin_email', 'hello@domain.de'),
-(15, 'default', 'core_mailer_smtp_host', ''),
-(16, 'default', 'core_mailer_smtp_user', ''),
-(17, 'default', 'core_mailer_smtp_password', ''),
-(18, 'api', 'core_api_allowed_origins', 'http://localhost');
+INSERT INTO `websdk_options` (`id`, `option_key`, `option_value`)
+VALUES
+	(10,'core_session_time_limit','30'),
+	(11,'core_mailer_from','WebSDK'),
+	(12,'core_mailer_from_email','hallo@domain.de'),
+	(13,'core_mailer_reply_email','reply@domain.de'),
+	(14,'core_mailer_admin_email','hallo@domain.de'),
+	(15,'core_mailer_smtp_host',''),
+	(16,'core_mailer_smtp_user',''),
+	(17,'core_mailer_smtp_password',''),
+	(18,'core_api_allowed_origins','http://localhost'),
+	(20,'core_uploads_userfiles_maxfilesize_in_mb','2.00');
+
+/*!40000 ALTER TABLE `websdk_options` ENABLE KEYS */;
+UNLOCK TABLES;
 
 -- --------------------------------------------------------
 
@@ -87,7 +92,7 @@ CREATE TABLE `websdk_users` (
 --
 
 INSERT INTO `websdk_users` (`id`, `type`, `firstname`, `lastname`, `username`, `email`, `locale`, `rights`, `pwd`, `salt`, `locked`, `deleted`, `lastmod`) VALUES
-(1, 0, 'Web', 'Chef', 'admin', 'hello@domain.de', 'de_DE', '1,2', 'e396350256d32a687a7bf456077b062d3abb368de5280593f3ebb70976d3edf1', 'jkDUiwy7lC', 0, 0, '2015-11-07 22:12:58');
+(1, 0, 'Web', 'Chef', 'admin', 'hallo@domain.de', 'de_DE', '1,2', 'e396350256d32a687a7bf456077b062d3abb368de5280593f3ebb70976d3edf1', 'jkDUiwy7lC', 0, 0, '2015-11-07 22:12:58');
 
 --
 -- Indizes der exportierten Tabellen

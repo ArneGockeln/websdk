@@ -67,7 +67,7 @@
                             <td {% if user['locked'] == 1 %}class="text-danger"{% endif %}>{{ user['username'] }}</td>
                             <td>{{ user['firstname'] }} {{ user['lastname'] }}</td>
                             <td>{{ user['email'] }}</td>
-                            <td><a href="{{ siteurl }}/users/{% if user['locked'] == 1 %}unlock/{% else %}lock/{% endif %}{{ user['id'] }}" class="btn-with-spinner">{% if user['locked'] == 1 %}<i class="fa fa-lock text-danger"></i>{% else %}<i class="fa fa-unlock text-success"></i>{% endif %}</a></td>
+                            <td><a href="{{ siteurl }}/users/{% if user['locked'] == 1 %}unlock/{% else %}lock/{% endif %}{{ user['id'] }}" class="btn btn-sm {% if user['locked'] == 1 %}btn-danger{% else %}btn-success{% endif %} btn-with-spinner">{% if user['locked'] == 1 %}<i class="fa fa-lock"></i>{% else %}<i class="fa fa-unlock"></i>{% endif %}</a></td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" style="display:flex;">
                                     <a href="{{ siteurl }}/users/edit/{{ user['id'] }}" class="btn btn-default" title="{% trans 'bearbeiten' %}" data-toggle="tooltip" data-placement="top"><i class="fa fa-edit"></i></a>
@@ -82,12 +82,79 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                {% include 'core/pagination.twig' %}
+                <div class="row">
+                    <div class="col-md-12 col-lg-12 text-center">
+                        {% include 'core/pagination.twig' %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block helpmodal %}
-    <p>Hier sollen Erklärungen für die Benutzerverwaltung stehen.</p>
+    <div class="modal-help-body">
+        <h4>Filter</h4>
+        <p>Über den Filter kann die Liste der Benutzer eingeschränkt werden. Kombinationen der Filter sind möglich.</p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Feld</th>
+                <th>Erklärung</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Konto-Typ</td>
+                <td>Über die Auswahl kann der Konto-Typ eingeschränkt werden.</td>
+            </tr>
+            <tr>
+                <td>Benutzername</td>
+                <td>Durch Eingabe des ganzen oder eines Teils eines Benutzernames kann die Liste eingeschränkt werden.</td>
+            </tr>
+            <tr>
+                <td>E-Mail</td>
+                <td>Durch die Eingabe einer E-Mail-Adresse kann nach einem ganz bestimmten Benutzer gesucht werden.</td>
+            </tr>
+            <tr>
+                <td>zurücksetzen</td>
+                <td>Wird das Häkchen gesetzt und der Filter Button bestätigt, so werden alle Filter-Einstellungen zurückgesetzt.</td>
+            </tr>
+            </tbody>
+        </table>
+        <hr/>
+
+        <h4>Buttons</h4>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Button</th>
+                <th>Erklärung</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><span class="btn btn-primary">+ Neuer Benutzer</span></td>
+                <td>Über diese Button kann ein neuer Benutzer angelegt werden.</td>
+            </tr>
+            <tr>
+                <td><span class="btn btn-danger"><i class="fa fa-lock"></i></span></td>
+                <td>Dieses Symbol zeigt an dass der Benutzer gesperrt ist. Ein Klick darauf entsperrt den Benutzer und senden ihm gleich ein neues Passwort zu.</td>
+            </tr>
+            <tr>
+                <td><span class="btn btn-success"><i class="fa fa-unlock"></i></span></td>
+                <td>Dieses Symbol zeigt an dass der Benutzer entsperrt ist. Ein Klick darauf sperrt den Benutzer, setzt das Passwort zurück und sendet dem Benutzer eine Nachricht per E-Mail.</td>
+            </tr>
+            <tr>
+                <td><span class="btn btn-default"><i class="fa fa-edit"></i></span></td>
+                <td>Über diesen Button kann ein Benutzer bearbeitet werden.</td>
+            </tr>
+            <tr>
+                <td><span class="btn btn-danger"><i class="fa fa-trash"></i></span></td>
+                <td>Über diesen Button wird der Dialog zum Löschen eines Benutzers geöffnet. Das Löschen muss bestätigt werden!</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 {% endblock %}

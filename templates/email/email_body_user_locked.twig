@@ -1,12 +1,10 @@
-{% trans %}
-Hallo {{ username }},
+{% extends 'email/email_body_footer.twig' %}
 
-Ihr Konto wurde von einem Administrator gesperrt.
-Um Ihr Konto zu entsperren wenden Sie sich bitte an die Verwaltung!
+{% block content %}
+    {% trans %}
+    Hallo {{ username }},
 
-Mit freundlichen Grüßen,
-Ihr IQZ Team
-{% endtrans %}
-
----
-{% trans %}Diese E-Mail wurde automatisch generiert.{% endtrans %}
+    Ihr Konto wurde von einem Administrator gesperrt.
+    Um Ihr Konto zu entsperren wenden Sie sich bitte an die Verwaltung!
+    {% endtrans %}
+{% endblock %}

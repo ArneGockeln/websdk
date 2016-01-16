@@ -11,7 +11,7 @@
     <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap.custom{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
     <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="{{ siteurl }}/templates/css/bootstrap/bootstrap-clockpicker.min.css" rel="stylesheet">
-    <link href="{{ siteurl }}/templates/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ siteurl }}/templates/css/font-awesome{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
     <link href="{{ siteurl }}/templates/css/custom{% if app_mode == 'production' %}.min{% endif %}.css" rel="stylesheet">
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -43,7 +43,6 @@
             <ul class="nav navbar-nav">
                 {{ menus['leftMenu']|raw }}
             </ul>
-                {% if isAdmin %}<p class="navbar-text text-admin">{% trans 'Als Administrator angemeldet!' %}</p>{% endif %}
             <ul class="nav navbar-nav navbar-right">
                 {{ menus['rightMenu']|raw }}
             </ul>
@@ -67,7 +66,7 @@
     {% block content %}{% endblock %}
 </div>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="{{ siteurl }}/templates/js/bootstrap.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap/bootstrap.min.js"></script>
 {% if isOnline %}
 <script type="text/javascript">
     setTimeout(function(){
@@ -78,10 +77,11 @@
 {% block footer %}{# for additional js or whatever #}{% endblock %}
 {% include 'modal/modal_delete.twig' %}
 {% include 'modal/modal_help.twig' %}
-<script src="{{ siteurl }}/templates/js/jquery.mask.min.js"></script>
-<script src="{{ siteurl }}/templates/js/bootstrap-datepicker.min.js"></script>
-<script src="{{ siteurl }}/templates/js/bootstrap-datepicker.de.min.js"></script>
-<script src="{{ siteurl }}/templates/js/bootstrap-clockpicker.min.js"></script>
+<script src="{{ siteurl }}/templates/js/vendors/jquery.mask.min.js"></script>
+<script src="{{ siteurl }}/templates/js/vendors/autoNumeric-min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap/bootstrap-datepicker.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap/bootstrap-datepicker.de.min.js"></script>
+<script src="{{ siteurl }}/templates/js/bootstrap/bootstrap-clockpicker.min.js"></script>
 <script src="{{ siteurl }}/templates/js/core{% if app_mode == 'production' %}.min{% endif %}.js"></script>
 <!-- WebSDK Version {{ wdk_version }}, build with love by www.Webchef.de. For more info check www.getWebSDK.com -->
 </body>

@@ -6,13 +6,17 @@
 
 require_once 'includes/app_top.php';
 
+use Slim\Middleware\SessionCookie;
 use WebSDK\UserSession;
 use WebSDK\UserTypeEnum;
 use WebSDK\BootstrapNavbar;
 use WebSDK\BootstrapListItem;
 
-global $app;
-$isAdmin = isUserType(UserTypeEnum::ADMINISTRATOR);
+global $app, $twig;
+
+$app->add(new SessionCookie(array('secret' => getSalt())));
+$currentUser = UserSession::getUser();
+$isAdmin = $currentUser->getType() == UserTypeEnum::ADMINISTRATOR;
 
 /**
  * Top Menu
@@ -25,7 +29,7 @@ if(UserSession::isOnline()){
     $rightMenu->add((new BootstrapListItem('#', _('Hilfe')))->prepend('<i class="fa fa-question btn-question"></i> '));
 
     if($isAdmin){
-        $options = $rightMenu->add(new BootstrapListItem('#', '<i class="fa fa-cogs"></i>'));
+        $options = $rightMenu->add((new BootstrapListItem('#', _('Admin')))->prepend('<i class="fa fa-cogs"></i> '));
             $options->add(new BootstrapListItem('/options', _('Einstellungen')));
             $options->add(new BootstrapListItem('/users', _('Benutzer')));
     }
@@ -40,26 +44,13 @@ $menus = array(
     'rightMenu' => $rightMenu->render('ul')
 );
 
-/**
- * Globals
- */
-global $twig;
+// Twig Globals
 $twig->addGlobal('menus', $menus);
 $twig->addGlobal('isAdmin', $isAdmin);
 
+// Load Routes
+loadFiles(WDK_ROUTE_PATH);
 
-/**
- * Load Core Routes
- */
-loadCoreRoutes();
-
-/**
- * Load App Routes
- */
-loadAppRoutes();
-
-/**
- * Run Application
- */
+// Run Application
 $app->run();
 ?>

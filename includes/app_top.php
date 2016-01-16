@@ -15,7 +15,7 @@ if (version_compare(PHP_VERSION, '5.2.7', '<')) {
 }
 
 if (!function_exists("gettext")){
-    die('ERROR: gettext extension is not installed!');
+    die('ERROR: gettext extension is not installed but required!');
 }
 
 define('WDK_VERSION', '1.0');
@@ -36,44 +36,64 @@ if (substr($rootPath, strlen($rootPath) - 1, 1) != '/') {
     $rootPath .= '/';
 }
 
+// The document root path
 define('WDK_ROOT_PATH', $rootPath);
-define('WDK_APP_INC_PATH', $rootPath . 'includes/app/');
-define('WDK_CORE_INC_PATH', $rootPath . 'includes/core/');
-define('WDK_EXT_INC_PATH', $rootPath . 'includes/ext/');
-define('WDK_CORE_ROUTE_PATH', $rootPath . 'includes/routes/core/');
-define('WDK_APP_ROUTE_PATH', $rootPath . 'includes/routes/app/');
+// WebSDK Core Classes
+define('WDK_CLASS_PATH', $rootPath . 'wdk/classes/');
+// WebSDK Core Functions
+define('WDK_FUNC_PATH', $rootPath . 'wdk/functions/');
+// WebSDK Core Extensions
+define('WDK_EXT_PATH', $rootPath . 'wdk/ext/');
+// App Routes
+define('WDK_ROUTE_PATH', $rootPath . 'routes/');
+// App Includes
+define('WDK_INC_PATH', $rootPath . 'includes/');
+// App Locales
 define('WDK_LOCALE_PATH', $rootPath . 'includes/locale/');
 
+// Require configurations
 require_once WDK_ROOT_PATH . 'config.php';
-require_once WDK_CORE_INC_PATH . 'Database.php';
-require_once WDK_CORE_INC_PATH . 'functions.php';
-require_once WDK_CORE_INC_PATH . 'security.php';
-require_once WDK_CORE_INC_PATH . 'DefaultMessages.php';
-require_once WDK_CORE_INC_PATH . 'UserSession.php';
 
+// Require Security Functions
+require_once (WDK_FUNC_PATH . 'security.php');
+// Require Core Functions
+require_once (WDK_FUNC_PATH . 'core.php');
+
+// Include once additional functions
+loadFiles(WDK_FUNC_PATH);
+
+// Include once additional ressources
+loadFiles(WDK_CLASS_PATH, array(
+    'Database.php',
+    'UserSession.php',
+    'IDBObject.php',
+    'User.php',
+    'UserRightEnum.php',
+    'UserTypeEnum.php',
+    'Option.php',
+    'Menu.php'
+));
+
+// Set Locale
 use WebSDK\UserSession;
 rebindLocale(UserSession::getLocale());
 
-require_once WDK_CORE_INC_PATH . 'Routes.php';
-require_once WDK_CORE_INC_PATH . 'IDBObject.php';
-require_once WDK_CORE_INC_PATH . 'User.php';
-require_once WDK_CORE_INC_PATH . 'UserRightEnum.php';
-require_once WDK_CORE_INC_PATH . 'UserTypeEnum.php';
-require_once WDK_CORE_INC_PATH . 'Option.php';
-require_once WDK_CORE_INC_PATH . 'Menu.php';
-
+// Register SPL Autoloader
 spl_autoload_register("WebSDKAutoloader");
 
 /**
  * Require some external stuff
  */
-require_once WDK_EXT_INC_PATH . 'PHPMailer/class.phpmailer.php';
-require_once WDK_EXT_INC_PATH . 'PHPMailer/class.smtp.php';
+// Require Debugging Tool
+require_once WDK_EXT_PATH . 'kint/Kint.class.php';
+// PHP Mailer
+require_once WDK_EXT_PATH . 'PHPMailer/class.phpmailer.php';
+require_once WDK_EXT_PATH . 'PHPMailer/class.smtp.php';
 // Twig Template Engine
-require_once WDK_EXT_INC_PATH . 'Twig/Autoloader.php';
+require_once WDK_EXT_PATH . 'Twig/Autoloader.php';
 Twig_Autoloader::register();
 // Slim Routing Framework
-require_once WDK_EXT_INC_PATH . 'Slim/Slim.php';
+require_once WDK_EXT_PATH . 'Slim/Slim.php';
 \Slim\Slim::registerAutoloader();
 
 // Instantiate App and set SLIM_MODE!!
@@ -93,6 +113,7 @@ $loader = new Twig_Loader_Filesystem(WDK_ROOT_PATH . 'templates');
 $twig = new Twig_Environment($loader, $twigOptions);
 // Add Frontend Globals
 $twig->addGlobal('siteurl', getHttpHost(false));
+$twig->addGlobal('fileurl', getHttpHost() . 'file/');
 $twig->addGlobal('app_title', (!is_empty(getOption('CFG_WDK_APP_TITLE')) ? getOption('CFG_WDK_APP_TITLE') : 'WebSDK'));
 $twig->addGlobal('isOnline', UserSession::isOnline());
 $twig->addGlobal('wdk_version', WDK_VERSION);
@@ -100,8 +121,10 @@ $twig->addGlobal('sessionlimit', UserSession::getSessionLimit() * 60 * 1000); //
 $twig->addGlobal('sessionuid', UserSession::getValue('uid'));
 
 // Require Twig Extensions
-require_once WDK_CORE_INC_PATH . 'UserTwigExtensions.php';
-require_once WDK_CORE_INC_PATH . 'CoreTwigExtensions.php';
+loadFiles(WDK_EXT_PATH, array(
+    'UserTwigExtensions.php',
+    'CoreTwigExtensions.php'
+));
 
 // load only minified styles and js if we are in production mode
 $app->configureMode('production', function () use ($app) {
@@ -140,20 +163,15 @@ $dbOptions = getOptions(true);
 try {
     if(!is_empty($dbOptions)){
         foreach($dbOptions as $key => $option){
-            setOption('OPT_' . strtoupper($key), getValue($option, 'option_value'));
+            $finalKey = 'OPT_' . strtoupper($key);
+            $finalValue = getValue($option, 'option_value');
+            // register global static option
+            setOption($finalKey, $finalValue);
+            // register twig static option
+            $twig->addGlobal($finalKey, $finalValue);
         }
     }
 } catch(Exception $e){
-    debug($e->getMessage(), true);
+    d($e->getMessage());
 }
-
-
-/**
- * Require core stuff
- */
-
-
-require_once WDK_CORE_ROUTE_PATH . 'core.routes.php';
-require_once WDK_CORE_ROUTE_PATH . 'user_profile.routes.php';
-require_once WDK_CORE_ROUTE_PATH . 'users.routes.php';
 ?>

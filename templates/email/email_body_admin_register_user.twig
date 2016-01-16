@@ -1,13 +1,14 @@
-{% trans %}
-Hallo Admin,
+{% extends 'email/email_body_footer.twig' %}
 
-ein neuer Benutzer hat sich registriert und wartet auf die Freischaltung!
+{% block content %}
+    {% trans %}
+    Hallo Admin,
 
-Der Username lautet: {{ username }}
-Die E-Mail Adresse lautet: {{ email }}
+    ein neuer Benutzer hat sich registriert und wartet auf die Freischaltung!
 
-Unter {{ siteurl }} können die Benutzer bearbeitet werden.
-{% endtrans %}
+    Der Username lautet: {{ username }}
+    Die E-Mail Adresse lautet: {{ email }}
 
----
-{% trans %}Diese E-Mail wurde automatisch generiert.{% endtrans %}
+    Unter {{ siteurl }} können die Benutzer bearbeitet werden.
+    {% endtrans %}
+{% endblock %}

@@ -9,72 +9,77 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#tabDefault" aria-controls="tabDefault" role="tab" data-toggle="tab">{% trans 'Allgemein' %}</a></li>
-                    <li role="presentation"><a href="#tabEmail" aria-controls="tabEmail" role="tab" data-toggle="tab">{% trans 'E-Mail' %}</a></li>
-                    <li role="presentation"><a href="#tabAPI" aria-controls="tabAPI" role="tab" data-toggle="tab">{% trans 'API' %}</a></li>
+                    <li role="presentation" {% if activeTab == 'default' %}class="active"{% endif %}><a href="#tabDefault" aria-controls="tabDefault" role="tab" data-toggle="tab">{% trans 'Allgemein' %}</a></li>
+                    <li role="presentation" {% if activeTab == 'email' %}class="active"{% endif %}><a href="#tabEmail" aria-controls="tabEmail" role="tab" data-toggle="tab">{% trans 'E-Mail' %}</a></li>
+                    <li role="presentation" {% if activeTab == 'api' %}class="active"{% endif %}><a href="#tabAPI" aria-controls="tabAPI" role="tab" data-toggle="tab">{% trans 'API' %}</a></li>
                 </ul>
 
                 <div class="tab-content" id="optiontabs">
-                    <div role="tabpanel" class="tab-pane active" id="tabDefault">
+                    <div role="tabpanel" class="tab-pane {% if activeTab == 'default' %}active{% endif %}" id="tabDefault">
                         <form method="post" action="{{ siteurl }}/options">
                             <input type="hidden" name="inputTab" value="default"/>
                             <legend>{% trans 'Sitzungen' %}</legend>
                             <div class="form-group">
                                 <label for="inputOptionSessionTimeLimit">{% trans 'Zeit in Minuten bis zur automatischen Abmeldung' %}:</label>
-                                <input type="text" name="options[default][core_session_time_limit]" id="inputOptionSessionTimeLimit" class="form-control" data-mask="000" placeholder="60" value="{{ core_session_time_limit }}"/>
+                                <input type="text" name="options[core_session_time_limit]" id="inputOptionSessionTimeLimit" class="form-control" data-mask="000" placeholder="60" value="{{ core_session_time_limit }}"/>
+                            </div>
+                            <legend>{% trans 'Dateianhänge' %}</legend>
+                            <div class="form-group">
+                                <label for="inputOptionUploadsUserFilesMaxFilesize">{% trans 'Maximale Dateigröße in MB für Benutzerdateien' %}:</label>
+                                <input type="text" name="options[core_uploads_userfiles_maxfilesize_in_mb]" id="inputOptionUploadsUserFilesMaxFilesize" class="form-control decimal-mask" data-a-sign=" MB" placeholder="1" value="{{ core_uploads_userfiles_maxfilesize_in_mb }}"/>
                             </div>
                         </form>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="tabEmail">
+                    <div role="tabpanel" class="tab-pane {% if activeTab == 'email' %}active{% endif %}" id="tabEmail">
                         <form method="post" action="{{ siteurl }}/options">
                             <input type="hidden" name="inputTab" value="email"/>
                             <legend>{% trans 'E-Mails' %}</legend>
                             <div class="form-group">
                                 <label for="inputOptionMailerDefaultFrom">{% trans 'Absender Name' %}:</label>
-                                <input type="text" name="options[default][core_mailer_from]" id="inputOptionMailerDefaultFrom" class="form-control" placeholder="{% trans 'Absender' %}" value="{{ core_mailer_from }}"/>
+                                <input type="text" name="options[core_mailer_from]" id="inputOptionMailerDefaultFrom" class="form-control" placeholder="{% trans 'Absender' %}" value="{{ core_mailer_from }}"/>
                             </div>
                             <div class="form-group">
                                 <label for="inputOptionMailerDefaultFromEmail">{% trans 'Absender E-Mail' %}:</label>
-                                <input type="text" name="options[default][core_mailer_from_email]" id="inputOptionMailerDefaultFromEmail" class="form-control" placeholder="noreply@domain.de" value="{{ core_mailer_from_email }}"/>
+                                <input type="text" name="options[core_mailer_from_email]" id="inputOptionMailerDefaultFromEmail" class="form-control" placeholder="noreply@domain.de" value="{{ core_mailer_from_email }}"/>
                             </div>
                             <div class="form-group">
                                 <label for="inputOptionMailerDefaultReplyEmail">{% trans 'Antwort E-Mail' %}:</label>
-                                <input type="text" name="options[default][core_mailer_reply_email]" id="inputOptionMailerDefaultReplyEmail" class="form-control" placeholder="reply@domain.de" value="{{ core_mailer_reply_email }}"/>
+                                <input type="text" name="options[core_mailer_reply_email]" id="inputOptionMailerDefaultReplyEmail" class="form-control" placeholder="reply@domain.de" value="{{ core_mailer_reply_email }}"/>
                             </div>
                             <div class="form-group">
                                 <label for="inputOptionMailerDefaultAdminEmail">{% trans 'Administrator E-Mail' %}:</label>
-                                <input type="text" name="options[default][core_mailer_admin_email]" id="inputOptionMailerDefaultAdminEmail" class="form-control" placeholder="admin@domain.de" value="{{ core_mailer_admin_email }}"/>
+                                <input type="text" name="options[core_mailer_admin_email]" id="inputOptionMailerDefaultAdminEmail" class="form-control" placeholder="admin@domain.de" value="{{ core_mailer_admin_email }}"/>
                             </div>
 
                             <legend>{% trans 'SMTP Ausgangsserver' %}</legend>
                             <div class="form-group">
                                 <label for="inputOptionMailerSMTPHost">{% trans 'SMTP Host' %}:</label>
-                                <input type="text" name="options[default][core_mailer_smtp_host]" id="inputOptionMailerSMTPHost" class="form-control" placeholder="mail.domain.de" value="{{ core_mailer_smtp_host }}"/>
+                                <input type="text" name="options[core_mailer_smtp_host]" id="inputOptionMailerSMTPHost" class="form-control" placeholder="mail.domain.de" value="{{ core_mailer_smtp_host }}"/>
                                 <p class="help-block">{% trans 'Lassen Sie diese Feld leer, wenn Sie keinen externen Server nutzen wollen!' %}</p>
                             </div>
                             <div class="form-group">
                                 <label for="inputOptionMailerSMTPUser">{% trans 'SMTP Benutzer' %}:</label>
-                                <input type="text" name="options[default][core_mailer_smtp_user]" id="inputOptionMailerSMTPUser" class="form-control" value="{{ core_mailer_smtp_user }}"/>
+                                <input type="text" name="options[core_mailer_smtp_user]" id="inputOptionMailerSMTPUser" class="form-control" value="{{ core_mailer_smtp_user }}"/>
                             </div>
                             <div class="form-group">
                                 <label for="inputOptionMailerSMTPPassword">{% trans 'SMTP Passwort' %}:</label>
-                                <input type="text" name="options[default][core_mailer_smtp_password]" id="inputOptionMailerSMTPPassword" class="form-control" value="{{ core_mailer_smtp_password }}"/>
+                                <input type="text" name="options[core_mailer_smtp_password]" id="inputOptionMailerSMTPPassword" class="form-control" value="{{ core_mailer_smtp_password }}"/>
                             </div>
                         </form>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="tabAPI">
+                    <div role="tabpanel" class="tab-pane {% if activeTab == 'api' %}active{% endif %}" id="tabAPI">
                         <form method="post" action="{{ siteurl }}/options">
                             <input type="hidden" name="inputTab" value="api"/>
                             <legend>{% trans 'API' %}</legend>
                             <div class="form-group">
                                 <label for="inputOptionAPIAllowedOrigins">{% trans 'Ajax Origins' %}</label>
-                                <input type="text" name="options[api][core_api_allowed_origins]" id="inputOptionAPIAllowedOrigins" class="form-control" placeholder="http://localhost, http://extern.domain.de" value="{{ core_api_allowed_origins }}"/>
+                                <input type="text" name="options[core_api_allowed_origins]" id="inputOptionAPIAllowedOrigins" class="form-control" placeholder="http://localhost, http://extern.domain.de" value="{{ core_api_allowed_origins }}"/>
                                 <p class="form-control-static">{% trans 'Alle hier eingetragenen Domains sind berechtigt die API per AJAX abzufragen! Mehre Domains bitte mit einem Komma trennen.' %}</p>
                                 <div class="form-control-static">
                                     {% trans %}Ajax Calls müssen dann mit der Option "crossDomain: true" aufgerufen werden.{% endtrans %}
                                     <pre>
 $.ajax({
-    url: '{{ siteurl }}/api',
+    url: strApiURL + route,
     crossDomain: true,
     dataType: "json"
 });
@@ -98,5 +103,77 @@ $.ajax({
 {% endblock %}
 
 {% block helpmodal %}
-    <p>Hier sollen Erklärungen für die Einstellungen stehen.</p>
+    <div class="modal-help-body">
+        <h4>Allgemein</h4>
+        <p>Die Änderungen werden erst nach Bestätigen des Speichern Buttons wirksam.</p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Feld</th>
+                <th>Erklärung</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Sitzungen Zeit</td>
+                <td>Die Sitzung wird automatisch nach dieser Zeit in Minuten beendet, wenn keine Aktion auf der Plattform durchgeführt wird.</td>
+            </tr>
+            <tr>
+                <td>Dateigröße Logos</td>
+                <td>Die maximale Dateigröße in Megabyte für Logo-Dateien pro Upload. Der Wert muss im Format 0.00 angegeben werden.</td>
+            </tr>
+            <tr>
+                <td>Dateigröße Benutzerdateien</td>
+                <td>Die maximale Dateigröße in Megabyte für Benutzerdateien pro Upload. Die Dateien werden an eine Veranstaltung angehangen. Der Wert muss im Format 0.00 angegeben werden.</td>
+            </tr>
+            <tr>
+                <td>Seminar Kurzbeschreibung</td>
+                <td>Die maximale Anzahl an Zeichen für die Kurzbeschreibung. Gezählt werden auch Leerzeichen. Der Wert muss als Ganzzahl angegeben werden.</td>
+            </tr>
+            </tbody>
+        </table>
+        <hr/>
+
+        <h4>E-Mail</h4>
+        <p>Die Änderungen werden erst nach Bestätigen des Speichern Buttons wirksam.</p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Feld</th>
+                <th>Erklärung</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Absender Name</td>
+                <td>Der Name des Absenders bei einer ausgehenden E-Mail.</td>
+            </tr>
+            <tr>
+                <td>Absender E-Mail</td>
+                <td>Die E-Mail-Adresse für eine ausgehende E-Mail.</td>
+            </tr>
+            <tr>
+                <td>Antwort E-Mail</td>
+                <td>Die E-Mail-Adresse die für die Antwortfunktion eines E-Mailprogramms genutzt werden soll.</td>
+            </tr>
+            <tr>
+                <td>Administrator E-Mail</td>
+                <td>Die E-Mail-Adresse an die Systemnachrichten gesendet werden sollen.</td>
+            </tr>
+            <tr>
+                <td>SMTP Host</td>
+                <td>Die URL oder IP des SMTP E-Mail Ausgangsservers. Diese Angabe ist optional.</td>
+            </tr>
+            <tr>
+                <td>SMTP Benutzer</td>
+                <td>Der Benutzername für den SMTP Postausgangsserver.</td>
+            </tr>
+            <tr>
+                <td>SMTP Passwort</td>
+                <td>Das Passwort für den SMTP Postausgangsserver.</td>
+            </tr>
+            </tbody>
+        </table>
+        <hr/>
+    </div>
 {% endblock %}

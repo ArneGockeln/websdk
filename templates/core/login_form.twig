@@ -26,6 +26,11 @@
                         <label for="pwd">{% trans 'Passwort' %}</label>
                         <input type="password" class="form-control" id="pwd" name="inputPwd" placeholder="{% trans 'Passwort' %}">
                     </div>
+                    {% if loginAttempt > 0 %}
+                    <div class="form-group">
+                        <p class="help-block">{% trans %}Das war der {{ loginAttempt }}te von 3 Login-Versuchen. Nach dreimaliger Falscheingabe wird Ihr Konto gesperrt.{% endtrans %}</p>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="well well-sm">

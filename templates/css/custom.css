@@ -30,3 +30,23 @@
 .glyphicon-left {
     margin-right: 7px;
 }
+
+.modal-help-body {
+    margin:0px;
+    padding:0px 10px 0px 0px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.modal-help-body h4:first-child {
+    margin-top: 0px;
+}
+.modal-help-body table thead tr {
+    background-color: #F2F2F2;
+}
+.modal-help-body table tbody td:first-child {
+    width: 20%;
+    font-weight: bold;
+}
+.alert-adminview {
+    background-color: #FAFAFA;
+}

@@ -1,0 +1,15 @@
+{% extends 'email/email_body_footer.twig' %}
+
+{% block content %}
+{% trans %}
+Hallo Administrator,
+
+der Benutzer "{{ username }}" hat 3 mal sein Passwort falsch eingegeben.
+Das Benutzerkonto wurde gesperrt.
+
+Die Daten:
+Benutzer-ID: {{ userid }}
+Benutzername: {{ username }}
+E-Mail: {{ email }}
+{% endtrans %}
+{% endblock %}

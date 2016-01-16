@@ -1,5 +1,66 @@
 {% extends 'base.twig' %}
 
+{% block head %}
+    {% if not isAdmin %}
+    <script type="text/javascript" src="{{ siteurl }}/templates/js/vendors/dropzone.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            var companyThumbnail = $('#companyLogoThumbnail');
+            var dropzoneProgress = $('#dropzoneProgressbar .progress-bar');
+            dropzoneProgress.parent().css('opacity', 0);
+            var dropzoneContainer = $('#inputLogoFile');
+            var myDropzone = new Dropzone("#inputLogoFile", {
+                url: "{{ siteurl }}/upload/logo",
+                maxFilesize: 2,
+                acceptFiles: 'image/*',
+                previewTemplate:'<div class="dz-preview dz-file-preview"><div class="dz-details"><div class="dz-filename"><span data-dz-name></span></div><div class="dz-size" data-dz-size></div></div><div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div><div class="dz-error-message"><span data-dz-errormessage></span></div></div>'
+            });
+            myDropzone.on("dragover", function(){
+                dropzoneContainer.addClass('alert alert-success');
+            });
+            myDropzone.on("dragleave", function(){
+                dropzoneContainer.removeClass('alert alert-success');
+            });
+            myDropzone.on("drop", function(){
+                dropzoneContainer.removeClass('alert alert-success');
+            });
+            myDropzone.on("totaluploadprogress", function(progress){
+                dropzoneProgress.parent().css({'opacity': 1});
+                dropzoneProgress.css({
+                    'width': progress + '%'
+                });
+            });
+            myDropzone.on("success", function(file, response){
+                var resJSON = JSON.parse(response);
+                if(resJSON.status != 200){
+                    myDropzone.removeFile(file);
+                    modalDialog('{% trans 'Fehler' %}', resJSON.body);
+                } else {
+                    if(resJSON.body.filename != undefined){
+                        if(resJSON.body.filename.length > 0){
+                            $('#inputCompanyLogo').val(resJSON.body.filename);
+                        }
+                    }
+                }
+            });
+            myDropzone.on("thumbnail", function(file, dataUrl) {
+                companyThumbnail.find('img').prop('src', dataUrl);
+                companyThumbnail.find('img').removeClass('hide');
+                companyThumbnail.find('p.text-danger').remove();
+            });
+
+            // delete company logo
+            $('#btnDeleteLogo').on('click', function(e){
+                e.preventDefault();
+                $('#inputCompanyLogo').val('');
+                $('#imgCompanyLogo').hide();
+                $(this).parent('.panel-footer').hide();
+            });
+        });
+    </script>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-md-12">
@@ -9,10 +70,15 @@
 
             <form method="post" action="{{ siteurl }}/users/save">
                 <input type="hidden" name="inputID" value="{{ user['id'] }}">
+                <input type="hidden" name="inputSiteMode" value="{{ siteMode }}"/>
+                <input type="hidden" name="inputCompanyLogo" value="{{ user['company_logo'] }}" id="inputCompanyLogo"/>
 
+                {% if isProfileMode %}
+                    <input type="hidden" name="inputType" value="{{ user['type'] }}"/>
+                {% else %}
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{% trans 'Daten' %}</h3>
+                        <h3 class="panel-title">{% trans 'Konto' %}</h3>
                     </div>
                     <div class="panel-body">
                         <div class="form-group">
@@ -23,6 +89,36 @@
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if isAdmin %}
+                            <div class="form-group">
+                                <label>{% trans 'Sicherheit' %}</label>
+                                <div class="checkbox">
+                                    <label for="inputLocked">
+                                        <input type="hidden" name="inputLocked" value="0"><input type="checkbox" name="inputLocked" value="1" id="inputLocked" {% if user['locked'] == 1 %}checked{% endif %}>
+                                        {% trans 'Gesperrt' %}
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans 'Daten' %}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% if locales|length > 0 %}
+                            <div class="form-group">
+                                <label for="inputLocale">{% trans 'Sprache' %}</label>
+                                <select name="inputLocale" id="inputLocale" class="form-control">
+                                    {% for lang in locales %}
+                                        <option value="{{ lang }}" {% if lang == user['locale'] %}selected{% endif %}>{{ lang }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
                         <div class="form-group">
                             <label for="inputUsername">{% trans 'Benutzername' %} <small>({% trans %}Der Benutzername ist alphanumerisch, 1-15 Zeichen lang und enthällt keine Sonder- und/oder Leerzeichen!{% endtrans %})</small></label>
                             <input type="text" name="inputUsername" id="inputUsername" class="form-control" value="{{ user['username'] }}">
@@ -38,15 +134,6 @@
                         <div class="form-group">
                             <label for="inputEmail">{% trans 'E-Mail' %}</label>
                             <input type="email" name="inputEmail" id="inputEmail" class="form-control" value="{{ user['email'] }}">
-                        </div>
-                        <div class="form-group">
-                            <label>{% trans 'Sicherheit' %}</label>
-                            <div class="checkbox">
-                                <label for="inputLocked">
-                                    <input type="hidden" name="inputLocked" value="0"><input type="checkbox" name="inputLocked" value="1" id="inputLocked" {% if user['locked'] == 1 %}checked{% endif %}>
-                                    {% trans 'Gesperrt' %}
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>
