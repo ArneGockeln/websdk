@@ -24,6 +24,14 @@ Installation
 3. upload files to your webserver (don't forget the .htaccess)
 4. login with user 'admin' and password 'Password123'
 
+.htaccess Example
+-----------------
+```
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+```
+
 Credits
 -------
 - Twitter Bootstrap http://getbootstrap.com/
